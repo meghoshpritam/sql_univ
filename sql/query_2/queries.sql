@@ -155,7 +155,6 @@ WHERE SPJ.S = 'S1'
  numbers and the corrosponding total quantity */
 SELECT J, P, SUM(QTY)
 FROM SPJ
-WHERE SPJ.QTY > 0
 GROUP BY J, P;
 
 
