@@ -290,7 +290,7 @@ FROM S,
      P,
      J
 WHERE S.CITY = P.CITY
-  AND P.CITY = J.CITY;
+  OR S.CITY = J.CITY;
 
 /* 34 Get part numbers for parts that are supplied either by a London supplier or
  in London project */
