@@ -250,13 +250,23 @@ WHERE SPJ.J = J.J
 
 /* 27 Gate supplier numbers for suppliers supplying some project with part P1 in a quantity
  greater than the average shipment quantity of part P1 for that project. */
-
+SELECT S
+FROM SPJ AS T1
+WHERE T1.P = 'P1'
+  AND QTY > (SELECT AVG(QTY) FROM SPJ AS T2 WHERE T2.P = 'P1' AND T1.J = T2.J);
 
 -- 28 Get project numbers for projects not supplied with any red part by any London supplier.
-
+SELECT DISTINCT SPJ.J, P.COLOR, S.CITY
+FROM SPJ,
+     P,
+     S
+WHERE P.COLOR != 'Red'
+  AND S.CITY != 'London';
 
 -- 29 Give project numbers for projects supplied entirely by supplier S1
-
+SELECT J
+FROM J
+WHERE NOT EXISTS(SELECT * FROM SPJ WHERE J.J = SPJ.J AND S != 'S1');
 
 -- 30 Get part numbers for parts supplied to all projects in London
 SELECT SPJ.P, SPJ.J, J.CITY
@@ -266,25 +276,13 @@ WHERE SPJ.J = J.J
   AND J.CITY = 'London';
 
 -- 31 Get supplier numbers for suppliers who supply the same part to all project
-# SELECT DISTINCT S.S, P.P
-# FROM S,
-#      P,
-#      J,
-#      SPJ
-# WHERE S.S = SPJ.S
-#   AND P.P = SPJ.P
-#   AND J.J IN (SELECT J FROM J);
+
 
 /* 32 Get project numbers for project supplied with at least all parts available
  from supplier S1 */
-# SELECT P, J
-# FROM SPJ
-# GROUP BY J, P;
-#
-#
-#       (SELECT DISTINCT SPJ.P
-# FROM SPJ
-# WHERE S = 'S1')
+SELECT DISTINCT J
+FROM SPJ
+WHERE P IN (SELECT P FROM SPJ WHERE S = 'S1');
 
 -- 33 Get all cities in which at least one supplier, part or project is located
 SELECT DISTINCT S.CITY AS S_CITY, P.CITY AS P_CITY, J.CITY AS J_CITY
@@ -314,7 +312,30 @@ WHERE NOT EXISTS(SELECT * FROM SPJ WHERE SPJ.S = S.S AND P.P = SPJ.P);
 
 /* 36 Get all pair of supplier numbers, Sx and Sy say, such that Sx and Sy supply exactly
  the same set parts each. */
-
+# SELECT A.S, B.S
+# FROM S AS A,
+#      S AS B
+# WHERE A.S > B.S
+#   AND NOT EXISTS(SELECT P
+#                  FROM P
+#                  WHERE EXISTS(SELECT *
+#                               FROM SPJ
+#                               WHERE SPJ.P = P.P
+#                                 AND SPJ.S = a.S)
+#                    AND NOT EXISTS(SELECT *
+#                                   FROM SPJ
+#                                   WHERE SPJ.P = p.pnum
+#                                     AND SPJ.S = b.S))
+#   AND NOT EXISTS(SELECT PNUM
+#                  FROM P
+#                  WHERE EXISTS(SELECT *
+#                               FROM SPJ
+#                               WHERE SPJ.pnum = p.pnum
+#                                 AND SPJ.snum = b.snum)
+#                    AND NOT EXISTS(SELECT *
+#                                   FROM SPJ
+#                                   WHERE SPJ.pnum = p.pnum
+#                                     AND SPJ.snum = a.snum));
 
 -- Clear
 DROP TABLE SPJ;
