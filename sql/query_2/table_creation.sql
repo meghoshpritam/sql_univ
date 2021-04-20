@@ -8,6 +8,7 @@ CREATE TABLE S
 	PRIMARY KEY (S)
 );
 
+DESC S;
 
 -- Create P table
 CREATE TABLE P
@@ -20,6 +21,7 @@ CREATE TABLE P
 	PRIMARY KEY (P)
 );
 
+DESC P;
 
 -- Create J table
 CREATE TABLE J
@@ -30,6 +32,7 @@ CREATE TABLE J
 	PRIMARY KEY (J)
 );
 
+DESC J;
 
 -- Create SPJ table
 CREATE TABLE SPJ
@@ -44,3 +47,4 @@ CREATE TABLE SPJ
   	FOREIGN KEY (J) REFERENCES J(J)
 );
 
+DESC SPJ;
